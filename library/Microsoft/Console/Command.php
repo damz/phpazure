@@ -211,6 +211,11 @@ class Microsoft_Console_Command
 			$type = new ReflectionClass($class);
 			
 			$handlers = self::_findValueForDocComment('@command-handler', $type->getDocComment());
+			if (count($handlers) == 0 && $type->isSubclassOf('Microsoft_Console_Command')) {
+				// Fallback: if the class extends Microsoft_Console_Command, register it as
+				// a command handler.
+				$handlers[] = $class; 
+			}
 			$handlerDescriptions = self::_findValueForDocComment('@command-handler-description', $type->getDocComment());
 			$handlerHeaders = self::_findValueForDocComment('@command-handler-header', $type->getDocComment());
 			$handlerFooters = self::_findValueForDocComment('@command-handler-footer', $type->getDocComment());
@@ -233,6 +238,11 @@ class Microsoft_Console_Command
 				$methods = $type->getMethods();
 			    foreach ($methods as $method) {
 			       	$commands = self::_findValueForDocComment('@command-name', $method->getDocComment());
+			    	if (substr($method->getName(), -7) == 'Command' && !in_array(substr($method->getName(), 0, -7), $commands)) {
+						// Fallback: if the method is named <commandname>Command,
+						// register it as a command.
+						$commands[] = substr($method->getName(), 0, -7); 
+					}
 			       	for ($x = 0; $x < count($commands); $x++) {
 			       		$commands[$x] = strtolower($commands[$x]); 
 			       	}
