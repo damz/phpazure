@@ -148,7 +148,6 @@ class Microsoft_Uri_Http extends Microsoft_Uri
         // Validate the URI
         if ($this->valid() === false) {
             //require_once 'Microsoft/Uri/Exception.php';
-            var_dump($this);
             throw new Microsoft_Uri_Exception('Invalid URI supplied');
         }
     }

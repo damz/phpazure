@@ -132,7 +132,6 @@ class Microsoft_WindowsAzure_CommandLine_Deployment
 	 */
 	public function createFromLocalCommand($subscriptionId, $certificate, $certificatePassphrase, $serviceName, $deploymentName, $label, $staging = false, $production = false, $packageLocation, $serviceConfigurationLocation, $storageAccount, $startImmediately = true, $warningsAsErrors = false, $waitForOperation = false)
 	{
-		die($packageLocation);
 		$deploymentSlot = 'staging';
 		if (!$staging && !$production) {
 			throw new Microsoft_Console_Exception('Either --Staging or --Production should be specified.');
