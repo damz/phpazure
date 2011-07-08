@@ -9,7 +9,6 @@
       </Site>
     </Sites>
     <Startup>
-      <Task commandLine="override-php-ini.cmd" executionContext="elevated" taskType="simple" />
       <Task commandLine="install-php.cmd" executionContext="elevated" taskType="simple" />
     </Startup>
     <Endpoints>
