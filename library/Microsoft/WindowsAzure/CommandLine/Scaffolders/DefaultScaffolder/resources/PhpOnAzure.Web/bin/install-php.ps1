@@ -18,7 +18,8 @@ if ([Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::CurrentRoleInstance
 	# Append PHP.ini directives
 	if ((Test-Path $myPhpIniFile) -eq 'True') {
 		$additionalPhpIniDirectives = Get-Content $myPhpIniFile
-		
+		$additionalPhpIniDirectives = $additionalPhpIniDirectives.Replace("%EXT%", $phpExtensionsPath)
+
 		Add-Content $phpIniFile "`r`n"
 		Add-Content $phpIniFile $additionalPhpIniDirectives
 	}
