@@ -56,8 +56,8 @@ class Microsoft_Console_Command_ParameterSource_StdIn
 	 */
 	public function getValueForParameter($parameter, $argv = array())
 	{
-		// Default value: false
-		$parameterValue = null;
+		// Default value
+		$parameterValue = $parameter->defaultvalue;
 			
 		// Read from STDIN 
 		$fs = fopen("php://stdin", "r");

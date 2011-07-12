@@ -59,17 +59,12 @@ class DefaultScaffolder
 	 * @command-name Run
 	 * @command-description Runs the scaffolder.
 	 * 
-	 * @command-parameter-for $scaffolderFile Microsoft_Console_Command_ParameterSource_Argv --Phar Required. The scaffolder Phar file path. This is injected automatically.
-	 * @command-parameter-for $rootPath Microsoft_Console_Command_ParameterSource_Argv|Microsoft_Console_Command_ParameterSource_ConfigFile --OutputPath|-out Required. The path to create the Windows Azure project structure. This is injected automatically. 
-	 * @command-parameter-for $diagnosticsConnectionString Microsoft_Console_Command_ParameterSource_Argv|Microsoft_Console_Command_ParameterSource_ConfigFile|Microsoft_Console_Command_ParameterSource_Env --DiagnosticsConnectionString|-d Optional. The diagnostics connection string. This defaults to development storage.
+	 * @command-parameter-for $scaffolderFile Argv --Phar Required. The scaffolder Phar file path. This is injected automatically.
+	 * @command-parameter-for $rootPath Argv|ConfigFile --OutputPath|-out Required. The path to create the Windows Azure project structure. This is injected automatically. 
+	 * @command-parameter-for $diagnosticsConnectionString Argv|ConfigFile|Env --DiagnosticsConnectionString|-d Optional. The diagnostics connection string. This defaults to development storage.
 	 */
-	public function runCommand($scaffolderFile, $rootPath, $diagnosticsConnectionString = '')
+	public function runCommand($scaffolderFile, $rootPath, $diagnosticsConnectionString = 'UseDevelopmentStorage=true')
 	{
-		// Defaults
-		if ($diagnosticsConnectionString == '') {
-			$diagnosticsConnectionString = 'UseDevelopmentStorage=true';
-		}
-		
 		// Load Phar
 		$phar = new Phar($scaffolderFile);
 		

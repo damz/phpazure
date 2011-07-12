@@ -98,7 +98,7 @@ class Microsoft_WindowsAzure_CommandLine_Scaffolder
 		array_unshift($argv, '--Phar=' . $scaffolderFile);
 		array_unshift($argv, 'Run');
 		array_unshift($argv, $scaffolderClass);
-				
+
 		// Run scaffolder
 		Microsoft_Console_Command::bootstrap($argv);
 		

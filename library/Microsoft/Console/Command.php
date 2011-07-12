@@ -167,7 +167,7 @@ class Microsoft_Console_Command
 			
 			// Consult value providers for value. First one wins.
 			foreach ($parameter->valueproviders as $valueProviderName) {
-				if (!class_exists($valueProviderName, true)) {
+				if (!class_exists($valueProviderName)) {
 					$valueProviderName = 'Microsoft_Console_Command_ParameterSource_' . $valueProviderName;
 				}
 				$valueProvider = new $valueProviderName();
@@ -273,6 +273,7 @@ class Microsoft_Console_Command
 							// Initialize
 							$parameter = $parameters[$pi];
 							$parameterFor = null;
+							$parameterForDefaultValue = null;
 							
 							// Is it a "catch-all" parameter?
 							if ($parameter->getName() == 'argv') {
@@ -291,8 +292,13 @@ class Microsoft_Console_Command
 								die('@command-parameter-for missing for parameter $' . $parameter->getName());	
 							}
 							
+							if (is_null($parameterForDefaultValue) && $parameter->isOptional()) {
+								$parameterForDefaultValue = $parameter->getDefaultValue();
+							}
+							
 							$parameterModel = (object)array(
 								'name'           => '$' . $parameter->getName(),
+								'defaultvalue'   => $parameterForDefaultValue,
 								'valueproviders' => explode('|', $parameterFor[1]),
 								'aliases'        => explode('|', $parameterFor[2]),
 								'description'    => (isset($parameterFor[3]) ? $parameterFor[3] : ''),
