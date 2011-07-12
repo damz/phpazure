@@ -167,6 +167,9 @@ class Microsoft_Console_Command
 			
 			// Consult value providers for value. First one wins.
 			foreach ($parameter->valueproviders as $valueProviderName) {
+				if (!class_exists($valueProviderName, true)) {
+					$valueProviderName = 'Microsoft_Console_Command_ParameterSource_' . $valueProviderName;
+				}
 				$valueProvider = new $valueProviderName();
 				
 				$value = $valueProvider->getValueForParameter($parameter, $parameterInputs);
