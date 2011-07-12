@@ -1,1 +1,1 @@
-php ..\..\Scaffolder.php Build -in="./" -out="..\ScaffoldTemplateScaffolder.phar"
+php ..\..\Scaffolder.php Build -in="./" -out="..\..\..\..\..\..\scaffolders\ScaffoldTemplateScaffolder.phar"

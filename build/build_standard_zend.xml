@@ -103,6 +103,10 @@
         <exclude name="**/.svn" />
       </fileset>
     </copy>
+	
+	<mkdir dir="./build/scaffolders" />
+	<exec command="build.bat" dir="./build/library/Microsoft/WindowsAzure/CommandLine/Scaffolders/DefaultScaffolder" />
+	<exec command="build.bat" dir="./build/library/Microsoft/WindowsAzure/CommandLine/Scaffolders/ScaffoldTemplateScaffolder" />
   </target>
 
   <target name="buildTests" depends="buildLibrary">

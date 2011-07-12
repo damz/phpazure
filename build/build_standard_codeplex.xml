@@ -26,6 +26,10 @@
     </copy>
     <copy file="../INSTALL.txt" tofile="./build/INSTALL.txt" overwrite="true" />
     <copy file="../LICENSE.txt" tofile="./build/LICENSE.txt" overwrite="true" />
+	
+	<mkdir dir="./build/scaffolders" />
+	<exec command="build.bat" dir="./build/library/Microsoft/WindowsAzure/CommandLine/Scaffolders/DefaultScaffolder" />
+	<exec command="build.bat" dir="./build/library/Microsoft/WindowsAzure/CommandLine/Scaffolders/ScaffoldTemplateScaffolder" />
   </target>
 
   <target name="runTests" depends="build">

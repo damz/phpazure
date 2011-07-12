@@ -140,7 +140,7 @@ class Microsoft_Console_Command
 			}
 		}
 		if (is_null($handler)) {
-			self::stderr("No class found that implements handler " . $requiredHandlerName . ".");
+			self::stderr("No class found that implements handler '" . $requiredHandlerName . "'. Create a class that is named '" . $requiredHandlerName . "' and extends Microsoft_Console_Command or is decorated with a docblock comment '@command-handler " . $requiredHandlerName . "'. Make sure it is loaded either through an autoloader or explicitly using require_once().");
 			die();
 		}
 		
@@ -153,7 +153,8 @@ class Microsoft_Console_Command
 			}
 		}
 		if (is_null($command)) {
-			self::stderr("No method found that implements command " . (isset($argv[1]) ? $argv[1] : '<default>') . ".");
+			$commandName = (isset($argv[1]) ? $argv[1] : '<default>');
+			self::stderr("No method found that implements command " . $commandName . ". Create a method in class '" . $handler->class . "' that is named '" . strtolower($commandName) . "Command' or is decorated with a docblock comment '@command-name " . $commandName . "'.");
 			die();
 		}
 		
@@ -174,7 +175,7 @@ class Microsoft_Console_Command
 				}
 			}
 			if (is_null($value) && $parameter->required) {
-				self::stderr("Error: Missing parameter: " . $parameter->aliases[0]);
+				self::stderr("Missing parameter: " . $parameter->aliases[0]);
 				die();
 			}
 			

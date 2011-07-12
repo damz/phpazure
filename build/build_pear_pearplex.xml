@@ -28,6 +28,10 @@
     </copy>
     <copy file="../INSTALL.txt" tofile="./build/INSTALL.txt" overwrite="true" />
     <copy file="../LICENSE.txt" tofile="./build/LICENSE.txt" overwrite="true" />
+	
+	<mkdir dir="./build/scaffolders" />
+	<exec command="build.bat" dir="./build/library/Microsoft/WindowsAzure/CommandLine/Scaffolders/DefaultScaffolder" />
+	<exec command="build.bat" dir="./build/library/Microsoft/WindowsAzure/CommandLine/Scaffolders/ScaffoldTemplateScaffolder" />
   </target>
 
   <target name="runTests" depends="build">
@@ -52,6 +56,8 @@
       <notes>Windows Azure SDK for PHP</notes>
       <lead user="maartenba" name="Maarten Balliauw" email="maarten@phpexcel.net"/>
       <license uri="http://phpazure.codeplex.com/license">BSD</license>
+	  <dirroles key="/Microsoft/WindowsAzure/CommandLine/Scaffolders/DefaultScaffolder">data</dirroles>
+	  <dirroles key="/Microsoft/WindowsAzure/bin">data</dirroles>
       <version release="${packageVersion}" api="${packageVersion}"/>
       <stability release="stable" api="stable"/>
       <dependencies>

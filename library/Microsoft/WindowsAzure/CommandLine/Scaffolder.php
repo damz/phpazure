@@ -78,7 +78,7 @@ class Microsoft_WindowsAzure_CommandLine_Scaffolder
 		// Locate scaffolder
 		$scaffolderFile = realpath($scaffolder);
 		if (!is_file($scaffolderFile)) {
-			$scaffolderFile = realpath(dirname(__FILE__) . '/Scaffolders/' . str_replace('.phar', '', $scaffolder) . '.phar');
+			$scaffolderFile = realpath(dirname(__FILE__) . '/../../../../scaffolders/' . str_replace('.phar', '', $scaffolder) . '.phar');
 		}
 		
 		// Verify scaffolder
