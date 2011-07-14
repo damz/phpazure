@@ -1,0 +1,202 @@
+<?xml version="1.0"?>
+<project name="PHPAzure" default="release" basedir=".">
+  <propertyprompt propertyName="outputPath" defaultValue="C:\Projects\ZF\Standard"
+		promptText="Enter output path" />
+
+  <adhoc-task name="replaceHeader">
+    <![CDATA[
+        class ReplaceHeaderTask extends Task {
+            protected $file;
+            protected $filesets = array();
+
+            function setFile(PhingFile $f) {
+                $this->file = $f;
+            }
+
+            function createFileSet() {
+                $num = array_push($this->filesets, new FileSet());
+                return $this->filesets[$num-1];
+            }
+
+            function main() {   
+                if ($this->file === null && empty($this->filesets)) {
+                    throw new BuildException("You must specify a file or fileset(s) for the <replaceHeader> task.");
+                }
+                
+                // compile a list of all files to modify, both file attrib and fileset elements
+                // can be used.
+                $files = array();
+                if ($this->file !== null) {
+                    $files[] = $this->file;
+                }
+                if (!empty($this->filesets)) {
+                    $filenames = array();
+                    foreach($this->filesets as $fs) {
+                        try {
+                            $ds = $fs->getDirectoryScanner($this->project);
+                            $filenames = $ds->getIncludedFiles(); // get included filenames
+                            $dir = $fs->getDir($this->project);
+                            foreach ($filenames as $fname) {
+                                $files[] = new PhingFile($dir, $fname);
+                            }
+                        } catch (BuildException $be) {
+                            $this->log($be->getMessage(), Project::MSG_WARN);
+                        }
+                    }                        
+                }
+
+                $this->log("Processing replaceHeader on " . count($files) . " files.");
+
+                foreach($files as $file) {
+                    $contents = file_get_contents($file);
+                    $contents = str_replace("\r\n", "\n", $contents);
+                    $contents = str_replace(
+						" * Copyright (c) 2009 - 2011, RealDolmen\n * All rights reserved.\n *\n * Redistribution and use in source and binary forms, with or without\n * modification, are permitted provided that the following conditions are met:\n *     * Redistributions of source code must retain the above copyright\n *       notice, this list of conditions and the following disclaimer.\n *     * Redistributions in binary form must reproduce the above copyright\n *       notice, this list of conditions and the following disclaimer in the\n *       documentation and/or other materials provided with the distribution.\n *     * Neither the name of RealDolmen nor the\n *       names of its contributors may be used to endorse or promote products\n *       derived from this software without specific prior written permission.\n *\n * THIS SOFTWARE IS PROVIDED BY RealDolmen ''AS IS'' AND ANY\n * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n * DISCLAIMED. IN NO EVENT SHALL RealDolmen BE LIABLE FOR ANY\n * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;\n * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND\n * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.",
+						" * Zend Framework\n *\n * LICENSE\n *\n * This source file is subject to the new BSD license that is bundled\n * with this package in the file LICENSE.txt.\n * It is also available through the world-wide-web at this URL:\n * http://framework.zend.com/license/new-bsd\n * If you did not receive a copy of the license and are unable to\n * obtain it through the world-wide-web, please send an email\n * to license@zend.com so we can send you a copy immediately.",
+						$contents
+					);
+                    file_put_contents($file, $contents);
+                }                         
+            }
+        }
+		]]>
+  </adhoc-task>
+  
+  <target name="prepare">
+    <echo msg="Creating build directory: ./build" />
+    <mkdir dir="./build" />
+    <mkdir dir="./build/library/Zend/Service/WindowsAzure" />
+    <mkdir dir="./build/tests/Zend/Service/WindowsAzure" />
+    <mkdir dir="./build/library/Zend/Service/SqlAzure" />
+    <mkdir dir="./build/tests/Zend/Service/SqlAzure" />
+    <mkdir dir="./build/documentation/manual/en/module_specs" />
+
+    <echo msg="Creating output directory: ${outputPath}" />
+    <mkdir dir="${outputPath}" />
+  </target>
+
+  <target name="buildLibrary" depends="prepare">
+    <echo msg="Creating library source files in build directory..." />
+    <copy todir="./build/library/Zend/Service/WindowsAzure" overwrite="true">
+      <fileset dir="../../library/Microsoft/WindowsAzure">
+        <include name="**/*.*" />
+        <exclude name="**/.svn" />
+      </fileset>
+    </copy>
+    <copy todir="./build/library/Zend/Service/SqlAzure" overwrite="true">
+      <fileset dir="../../library/Microsoft/SqlAzure">
+        <include name="**/*.*" />
+        <exclude name="**/.svn" />
+      </fileset>
+    </copy>
+    <copy todir="./build/documentation/manual/en/module_specs" overwrite="true">
+      <mapper type="regexp" from="^(.*)_(.*)_(.*)\.xml" to="Zend_Service_WindowsAzure_\3.xml"/>
+      <fileset dir="../../documentation/manual/en/module_specs">
+        <include name="**/*.*" />
+        <exclude name="**/.svn" />
+      </fileset>
+    </copy>
+    <copy todir="./build/documentation/manual/en/module_specs" overwrite="true">
+      <mapper type="regexp" from="^(.*)_WindowsAzure\.xml" to="Zend_Service_WindowsAzure.xml"/>
+      <fileset dir="../../documentation/manual/en/module_specs">
+        <include name="**/*.*" />
+        <exclude name="**/.svn" />
+      </fileset>
+    </copy>
+	
+	<mkdir dir="./build/scaffolders" />
+	<exec command="build.bat" dir="./build/library/Microsoft/WindowsAzure/CommandLine/Scaffolders/DefaultScaffolder" />
+	<exec command="build.bat" dir="./build/library/Microsoft/WindowsAzure/CommandLine/Scaffolders/ScaffoldTemplateScaffolder" />
+  </target>
+
+  <target name="buildTests" depends="buildLibrary">
+    <echo msg="Creating tests source files in build directory..." />
+    <copy todir="./build/tests/Zend/Service/WindowsAzure" overwrite="true">
+      <fileset dir="../../tests/Microsoft/WindowsAzure">
+        <include name="**/*.*" />
+        <exclude name="**/.svn" />
+      </fileset>
+    </copy>
+    <copy todir="./build/tests/Zend/Service/SqlAzure" overwrite="true">
+      <fileset dir="../../tests/Microsoft/SqlAzure">
+        <include name="**/*.*" />
+        <exclude name="**/.svn" />
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="configureTests" depends="buildTests">
+    <echo msg="Configuring tests (TestConfiguration.php.dist)..." />
+  	<copy file="../../tests/TestConfiguration.php" tofile="./build/tests/TestConfiguration.php.dist" overwrite="true" />
+  	<copy file="../../tests/TestHelper.php" tofile="./build/tests/TestHelper.php" overwrite="true" />
+  </target>
+
+  <target name="rebranding" depends="configureTests">
+    <reflexive>
+      <fileset dir="./build">
+        <include name="**/*.*" />
+      </fileset>
+      <filterchain>
+        <replaceregexp>
+          <regexp pattern="Microsoft Azure" replace="Zend Framework - Zend_Service_WindowsAzure" ignoreCase="true" />
+
+          <regexp pattern="TESTS_" replace="TESTS_ZEND_SERVICE_WINDOWSAZURE_" ignoreCase="true" />
+          <regexp pattern="\/\.\.\/\.\.\/TestHelper\.php" replace="/../../../TestHelper.php" ignoreCase="true" />
+          <regexp pattern="\/\.\.\/\.\.\/TestConfiguration\.php" replace="/../../../TestConfiguration.php.dist" ignoreCase="true" />
+
+          <regexp pattern="Microsoft_Http" replace="Zend_Http" ignoreCase="true" />
+          <regexp pattern="Microsoft\/Http" replace="Zend/Http" ignoreCase="true" />
+          <regexp pattern="Microsoft_Uri" replace="Zend_Uri" ignoreCase="true" />
+          <regexp pattern="Microsoft\/Uri" replace="Zend/Uri" ignoreCase="true" />
+          <regexp pattern="Microsoft_WindowsAzure" replace="Zend_Service_WindowsAzure" ignoreCase="true" />
+          <regexp pattern="Microsoft\/WindowsAzure" replace="Zend/Service/WindowsAzure" ignoreCase="true" />
+          <regexp pattern="Microsoft_SqlAzure" replace="Zend_Service_SqlAzure" ignoreCase="true" />
+          <regexp pattern="Microsoft\/SqlAzure" replace="Zend/Service/SqlAzure" ignoreCase="true" />
+          <regexp pattern="Microsoft Azure" replace="Zend Framework - Zend_Service_WindowsAzure" ignoreCase="true" />
+          <regexp pattern="Microsoft_" replace="Zend_Service_" ignoreCase="true" />
+          <regexp pattern="Microsoft\/" replace="Zend/Service/" ignoreCase="true" />
+
+          <regexp pattern="microsoft.windowsazure" replace="zend.service.windowsazure" ignoreCase="true" />
+
+          <regexp pattern="\@category   Microsoft" replace="@category   Zend" ignoreCase="true" />
+          <regexp pattern="\@copyright  Copyright \(c\) 2009 - 2011, RealDolmen \(http\:\/\/www.realdolmen.com\)" replace="@copyright  Copyright (c) 2005-2011 Zend Technologies USA Inc. (http://www.zend.com)" ignoreCase="true" />
+          <regexp pattern="\@license    http\:\/\/phpazure\.codeplex\.com\/license" replace="@license    http://framework.zend.com/license/new-bsd     New BSD License" ignoreCase="true" />
+          <regexp pattern="\@version.*" replace="@version    $Id$" ignoreCase="true" />
+
+          <regexp pattern="\@category   Microsoft" replace="@category   Zend" ignoreCase="true" />
+          <regexp pattern="\@copyright  Copyright \(c\) 2009 - 2011, RealDolmen \(http\:\/\/www.realdolmen.com\)" replace="@copyright  Copyright (c) 2005-2011 Zend Technologies USA Inc. (http://www.zend.com)" ignoreCase="true" />
+          <regexp pattern="\@license    http\:\/\/phpazure\.codeplex\.com\/license" replace="@license    http://framework.zend.com/license/new-bsd     New BSD License" ignoreCase="true" />
+          <regexp pattern="\@version.*" replace="@version    $Id$" ignoreCase="true" />
+        </replaceregexp>
+      </filterchain>
+    </reflexive>
+    <replaceHeader>
+      <fileset dir="./build">
+        <include name="**/*.*" />
+      </fileset>
+    </replaceHeader>
+  </target>
+
+  <target name="runTests" depends="rebranding">
+    <phpunit haltonerror="true">
+      <formatter type="plain" usefile="false" />
+      <batchtest>
+        <fileset dir="./build/tests/">
+          <include name="**/*Test.php"/>
+        </fileset>
+      </batchtest>
+    </phpunit>
+  </target>
+  
+  <target name="release" depends="runTests">
+    <echo msg="Copying to destination folder..." />
+    <copy todir="${outputPath}" overwrite="true">
+      <fileset dir="./build">
+        <include name="**/*.*" />
+      </fileset>
+    </copy>
+
+    <echo msg="Cleaning build directory: ./build" />
+    <delete dir="./build" />
+  </target>
+</project>

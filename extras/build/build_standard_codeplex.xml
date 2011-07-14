@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<project name="PHPAzure" default="release" basedir=".">
+  <propertyprompt propertyName="packageVersion" defaultValue="1.0.0"
+		promptText="Enter package version" />
+  
+  <target name="prepare">
+    <echo msg="Creating build directory: ./build" />
+    <mkdir dir="./build" />
+  </target>
+
+  <target name="build" depends="prepare">
+    <echo msg="Copying source files to build directory..." />
+    <mkdir dir="./build/documentation/api" />
+    <copy todir="./build/library" overwrite="true">
+      <fileset dir="../../library">
+        <include name="**/*.*" />
+        <exclude name="**/.svn" />
+      </fileset>
+    </copy>
+    <copy todir="./build/tests" overwrite="true">
+      <fileset dir="../../tests">
+        <include name="**/*.*" />
+        <exclude name="**/.svn" />
+        <exclude name="**/xxxx.php" />
+      </fileset>
+    </copy>
+    <copy file="../../INSTALL.txt" tofile="./build/INSTALL.txt" overwrite="true" />
+    <copy file="../../LICENSE.txt" tofile="./build/LICENSE.txt" overwrite="true" />
+	
+	<mkdir dir="./build/scaffolders" />
+	<exec command="build.bat" dir="./build/library/Microsoft/WindowsAzure/CommandLine/Scaffolders/DefaultScaffolder" />
+	<exec command="build.bat" dir="./build/library/Microsoft/WindowsAzure/CommandLine/Scaffolders/ScaffoldTemplateScaffolder" />
+  </target>
+
+  <target name="runTests" depends="build">
+    <phpunit haltonerror="true">
+      <formatter type="plain" usefile="false" />
+      <batchtest>
+        <fileset dir="./build/tests/">
+          <include name="**/*Test.php"/>
+        </fileset>
+      </batchtest>
+    </phpunit>
+  </target>
+
+  <target name="apidocs" depends="runTests">
+    <echo msg="Generating API documentation..." />
+
+    <phpdoc title="Windows Azure SDK for PHP"
+            destdir="./build/documentation/api"
+            sourcecode="true"
+            output="HTML:Smarty:PHP"
+            defaultcategoryname="Microsoft_WindowsAzure"
+            defaultpackagename="Microsoft_WindowsAzure"
+            pear="true">
+      <fileset dir="./build/library">
+        <include name="**/*.php" />
+      </fileset>
+    </phpdoc>
+  </target>
+
+  <target name="release" depends="apidocs">
+    <echo msg="Creating release package (v${packageVersion})..." />
+    <zip destfile="PHPAzure-${packageVersion}.zip" basedir="./build"/>
+
+    <echo msg="Cleaning build directory: ./build" />
+    <delete dir="./build" />
+  </target>
+</project>
