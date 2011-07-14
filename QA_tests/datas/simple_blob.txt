@@ -1,2 +1,0 @@
-hello windows azure
-test cases for phpazure
