@@ -87,10 +87,16 @@ class Microsoft_WindowsAzure_CommandLine_Scaffolder
 		}
 		
 		// Include scaffolder
-		$scaffolderClass = str_replace('.phar', '', basename($scaffolderFile));
 		require_once $scaffolderFile;
+		$scaffolderClass = str_replace('.phar', '', basename($scaffolderFile));
 		if (!class_exists($scaffolderClass)) {
-			throw new Microsoft_Console_Exception('Could not locate a class named ' . $scaffolderClass . ' in the given scaffolder: ' . $scaffolder . '. Make sure the scaffolder package contains a file named index.php and contains a class named Scaffolder.');
+			$scaffolderClass = str_replace('-', '_', str_replace('.', '_', $scaffolderClass));
+			if (!class_exists($scaffolderClass)) {
+				$scaffolderClass = substr($scaffolderClass, 0, strpos($scaffolderClass, '_'));
+				if (!class_exists($scaffolderClass)) {
+					throw new Microsoft_Console_Exception('Could not locate a class named ' . $scaffolderClass . ' in the given scaffolder: ' . $scaffolder . '. Make sure the scaffolder package contains a file named index.php and contains a class named Scaffolder.');
+				}
+			}
 		}
 		
 		// Add command parameters
@@ -133,10 +139,16 @@ class Microsoft_WindowsAzure_CommandLine_Scaffolder
 		}
 		
 		// Include scaffolder
-		$scaffolderClass = str_replace('.phar', '', basename($scaffolderFile));
 		require_once $scaffolderFile;
+		$scaffolderClass = str_replace('.phar', '', basename($scaffolderFile));
 		if (!class_exists($scaffolderClass)) {
-			throw new Microsoft_Console_Exception('Could not locate a class named ' . $scaffolderClass . ' in the given scaffolder: ' . $scaffolder . '. Make sure the scaffolder package contains a file named index.php and contains a class named Scaffolder.');
+			$scaffolderClass = str_replace('-', '_', str_replace('.', '_', $scaffolderClass));
+			if (!class_exists($scaffolderClass)) {
+				$scaffolderClass = substr($scaffolderClass, 0, strpos($scaffolderClass, '_'));
+				if (!class_exists($scaffolderClass)) {
+					throw new Microsoft_Console_Exception('Could not locate a class named ' . $scaffolderClass . ' in the given scaffolder: ' . $scaffolder . '. Make sure the scaffolder package contains a file named index.php and contains a class named Scaffolder.');
+				}
+			}
 		}
 		
 		// Add command parameters
