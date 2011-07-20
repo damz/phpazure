@@ -82,6 +82,11 @@ class Microsoft_WindowsAzure_CommandLine_Package
 			$outputPath = realpath($path . '/../');
 		}
 		$packageOut = $outputPath . '/' . basename($path) . '.cspkg';
+		if (!file_exists($outputPath)) {
+			if (@mkdir($outputPath) === false) {
+				throw new Microsoft_Console_Exception('The path ' . $outputPath . ' could not be created.');
+			}
+		}
 
 		// Find Windows Azure SDK bin folder
 		$windowsAzureSdkFolderCandidates = array_merge(
