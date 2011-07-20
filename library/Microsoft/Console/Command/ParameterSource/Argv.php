@@ -57,7 +57,7 @@ class Microsoft_Console_Command_ParameterSource_Argv
 	public function getValueForParameter($parameter, $argv = array())
 	{
 		// Default value
-		$parameterValue = $parameter->defaultvalue;
+		$parameterValue = null;
 			
 		// Loop parameter inputs
 		foreach ($argv as $parameterInput) {

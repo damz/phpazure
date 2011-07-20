@@ -180,6 +180,8 @@ class Microsoft_Console_Command
 			if (is_null($value) && $parameter->required) {
 				self::stderr("Missing parameter: " . $parameter->aliases[0]);
 				die();
+			} else if (is_null($value)) {
+				$value = $parameter->defaultvalue;
 			}
 			
 			// Set value

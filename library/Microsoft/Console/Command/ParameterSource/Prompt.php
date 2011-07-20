@@ -57,7 +57,7 @@ class Microsoft_Console_Command_ParameterSource_Prompt
 	public function getValueForParameter($parameter, $argv = array())
 	{
 		// Default value
-		$parameterValue = $parameter->defaultvalue;
+		$parameterValue = null;
 		
 		// Prompt the user
 		fwrite(STDOUT, "Supply a value for " . $parameter->aliases[0] . ": ");

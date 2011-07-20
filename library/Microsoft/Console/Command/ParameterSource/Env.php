@@ -57,7 +57,7 @@ class Microsoft_Console_Command_ParameterSource_Env
 	public function getValueForParameter($parameter, $argv = array())
 	{
 		// Default value
-		$parameterValue = $parameter->defaultvalue;
+		$parameterValue = null;
 		
 		// Fetch value for parameter
 		foreach ($parameter->aliases as $alias) {

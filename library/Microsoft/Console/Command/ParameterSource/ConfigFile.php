@@ -84,7 +84,7 @@ class Microsoft_Console_Command_ParameterSource_ConfigFile
 		$iniValues = parse_ini_file($configurationFilePath);
 		
 		// Default value
-		$parameterValue = $parameter->defaultvalue;
+		$parameterValue = null;
 		
 		// Loop aliases
 		foreach ($parameter->aliases as $alias) {
