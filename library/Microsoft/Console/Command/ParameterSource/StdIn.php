@@ -59,20 +59,29 @@ class Microsoft_Console_Command_ParameterSource_StdIn
 		// Default value
 		$parameterValue = null;
 			
-		// Read from STDIN 
-		$fs = fopen("php://stdin", "r");
-		while (!feof($fs)) { 
-			$parameterValue .= fread($fs, 1024); 
-		} 
-		fclose($fs);
+		// Check STDIN for data
+		if (ftell(STDIN) !== false) {
+			// Read from STDIN
+			$fs = fopen("php://stdin", "r");
+			if ($fs !== false) {
+				/*
+				while (!feof($fs)) { 
+					$data = fread($fs, 1);
+					var_dump($data);
+					$parameterValue .= $data; 
+				} */
+				$parameterValue = stream_get_contents($fs);
+				fclose($fs);
+			}
 		
-		// Remove ending \r\n
-		$parameterValue = rtrim($parameterValue);
-		
-		if (strtolower($parameterValue) == 'true') {
-			$parameterValue = true;
-		} else if (strtolower($parameterValue) == 'false') {
-			$parameterValue = false;
+			// Remove ending \r\n
+			$parameterValue = rtrim($parameterValue);
+			
+			if (strtolower($parameterValue) == 'true') {
+				$parameterValue = true;
+			} else if (strtolower($parameterValue) == 'false') {
+				$parameterValue = false;
+			}
 		}
 		
 		// Done!

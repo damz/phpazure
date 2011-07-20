@@ -157,9 +157,10 @@ class Microsoft_Console_Command
 			self::stderr("No method found that implements command " . $commandName . ". Create a method in class '" . $handler->class . "' that is named '" . strtolower($commandName) . "Command' or is decorated with a docblock comment '@command-name " . $commandName . "'.");
 			die();
 		}
-		
+
 		// Parse parameter values
 		$parameterValues = array();
+		$missingParameterValues = array();
 		$parameterInputs = array_splice($argv, 2);
 		foreach ($command->parameters as $parameter) {
 			// Default value: null
@@ -178,8 +179,7 @@ class Microsoft_Console_Command
 				}
 			}
 			if (is_null($value) && $parameter->required) {
-				self::stderr("Missing parameter: " . $parameter->aliases[0]);
-				die();
+				$missingParameterValues[] = $parameter->aliases[0];
 			} else if (is_null($value)) {
 				$value = $parameter->defaultvalue;
 			}
@@ -187,6 +187,12 @@ class Microsoft_Console_Command
 			// Set value
 			$parameterValues[] = $value;
 			$argvValues[$parameter->aliases[0]] = $value;
+		}
+
+		// Mising parameters?
+		if (count($missingParameterValues) > 0) {
+			self::stderr("Some parameters are missing:\r\n" . implode("\r\n", $missingParameterValues));
+			die();
 		}
 		
 		// Supply argv in a nice way
