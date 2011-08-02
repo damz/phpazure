@@ -50,16 +50,19 @@ class Microsoft_WindowsAzure_Storage
 	/**
 	 * Development storage URLS
 	 */
-	const URL_DEV_BLOB      = "127.0.0.1:10000";
-	const URL_DEV_QUEUE     = "127.0.0.1:10001";
-	const URL_DEV_TABLE     = "127.0.0.1:10002";
+	const URL_DEV_BLOB      = "http://127.0.0.1:10000";
+	const URL_DEV_QUEUE     = "http://127.0.0.1:10001";
+	const URL_DEV_TABLE     = "http://127.0.0.1:10002";
 	
 	/**
 	 * Live storage URLS
 	 */
-	const URL_CLOUD_BLOB    = "blob.core.windows.net";
-	const URL_CLOUD_QUEUE   = "queue.core.windows.net";
-	const URL_CLOUD_TABLE   = "table.core.windows.net";
+	const URL_CLOUD_BLOB    = "http://blob.core.windows.net";
+	const URL_CLOUD_QUEUE   = "http://queue.core.windows.net";
+	const URL_CLOUD_TABLE   = "http://table.core.windows.net";
+	const URL_CLOUD_BLOB_HTTPS    = "ssl://blob.core.windows.net";
+	const URL_CLOUD_QUEUE_HTTPS   = "ssl://queue.core.windows.net";
+	const URL_CLOUD_TABLE_HTTPS   = "ssl://table.core.windows.net";
 	
 	/**
 	 * Resource types
@@ -79,11 +82,25 @@ class Microsoft_WindowsAzure_Storage
 	const PREFIX_STORAGE_HEADER  = "x-ms-";
 	
 	/**
+	 * Protocols
+	 */
+	const PROTOCOL_HTTP  = 'http://';
+	const PROTOCOL_HTTPS = 'ssl://';
+	const PROTOCOL_SSL   = 'ssl://';
+	
+	/**
 	 * Current API version
 	 * 
 	 * @var string
 	 */
 	protected $_apiVersion = '2009-09-19';
+	
+	/**
+	 * Storage protocol
+	 *
+	 * @var string
+	 */
+	protected $_protocol = 'http://';
 	
 	/**
 	 * Storage host name
@@ -178,7 +195,16 @@ class Microsoft_WindowsAzure_Storage
 		$usePathStyleUri = false,
 		Microsoft_WindowsAzure_RetryPolicy_RetryPolicyAbstract $retryPolicy = null
 	) {
-		$this->_host = $host;
+		if (strpos($host, self::PROTOCOL_HTTP) !== false) {
+			$this->_protocol = self::PROTOCOL_HTTP;
+			$this->_host = str_replace(self::PROTOCOL_HTTP, '', $host);
+		} else if (strpos($host, self::PROTOCOL_HTTPS) !== false) {
+			$this->_protocol = self::PROTOCOL_HTTPS;
+			$this->_host = str_replace(self::PROTOCOL_HTTPS, '', $host);
+		} else {
+			$this->_protocol = self::PROTOCOL_HTTP;
+			$this->_host = $host;
+		}
 		$this->_accountName = $accountName;
 		$this->_accountKey = $accountKey;
 		$this->_usePathStyleUri = $usePathStyleUri;
@@ -302,9 +328,9 @@ class Microsoft_WindowsAzure_Storage
 	public function getBaseUrl()
 	{
 		if ($this->_usePathStyleUri) {
-			return 'http://' . $this->_host . '/' . $this->_accountName;
+			return $this->_protocol . $this->_host . '/' . $this->_accountName;
 		} else {
-			return 'http://' . $this->_accountName . '.' . $this->_host;
+			return $this->_protocol . $this->_accountName . '.' . $this->_host;
 		}
 	}
 	
