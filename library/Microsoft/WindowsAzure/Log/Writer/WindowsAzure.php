@@ -124,11 +124,11 @@ class Microsoft_WindowsAzure_Log_Writer_WindowsAzure extends Microsoft_Log_Write
 	public function shutdown() {
 		parent::shutdown();
 		if ($this->_bufferMessages) {
-			$this->_tableStorageConnection->startBatch();
+			$batch = $this->_tableStorageConnection->startBatch();
 			foreach ($this->_messageBuffer as $logEntity) {
 				$this->_tableStorageConnection->insertEntity($this->_tableName, $logEntity);
 			}
-			$this->_tableStorageConnection->commit();
+			$batch->commit();
 		}
 	}
 
