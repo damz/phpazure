@@ -9,6 +9,7 @@
       </Site>
     </Sites>
     <Startup>
+      <Task commandLine="add-environment-variables.cmd" executionContext="elevated" taskType="simple" />
       <Task commandLine="install-php.cmd" executionContext="elevated" taskType="simple" />
     </Startup>
     <Endpoints>

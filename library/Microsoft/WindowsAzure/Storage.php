@@ -85,7 +85,7 @@ class Microsoft_WindowsAzure_Storage
 	 * Protocols
 	 */
 	const PROTOCOL_HTTP  = 'http://';
-	const PROTOCOL_HTTPS = 'ssl://';
+	const PROTOCOL_HTTPS = 'https://';
 	const PROTOCOL_SSL   = 'ssl://';
 	
 	/**
@@ -201,6 +201,9 @@ class Microsoft_WindowsAzure_Storage
 		} else if (strpos($host, self::PROTOCOL_HTTPS) !== false) {
 			$this->_protocol = self::PROTOCOL_HTTPS;
 			$this->_host = str_replace(self::PROTOCOL_HTTPS, '', $host);
+		} else if (strpos($host, self::PROTOCOL_SSL) !== false) {
+			$this->_protocol = self::PROTOCOL_SSL;
+			$this->_host = str_replace(self::PROTOCOL_SSL, '', $host);
 		} else {
 			$this->_protocol = self::PROTOCOL_HTTP;
 			$this->_host = $host;
