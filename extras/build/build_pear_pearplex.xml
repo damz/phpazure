@@ -19,6 +19,12 @@
         <exclude name="**/.svn" />
       </fileset>
     </copy>
+    <copy todir="./build/bin" overwrite="true">
+      <fileset dir="../../bin">
+        <include name="**/*.*" />
+        <exclude name="**/.svn" />
+      </fileset>
+    </copy>
     <copy todir="./build/tests" overwrite="true">
       <fileset dir="../../tests">
         <include name="**/*.*" />
