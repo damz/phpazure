@@ -211,12 +211,12 @@ class Microsoft_WindowsAzure_Storage
 		$this->_accountName = $accountName;
 		$this->_accountKey = $accountKey;
 		$this->_usePathStyleUri = $usePathStyleUri;
-		
+
 		// Using local storage?
 		if (!$this->_usePathStyleUri
-			&& ($this->_host == self::URL_DEV_BLOB
-				|| $this->_host == self::URL_DEV_QUEUE
-				|| $this->_host == self::URL_DEV_TABLE)
+			&& ($this->_protocol . $this->_host == self::URL_DEV_BLOB
+				|| $this->_protocol . $this->_host == self::URL_DEV_QUEUE
+				|| $this->_protocol . $this->_host == self::URL_DEV_TABLE)
 		) {
 			// Local storage
 			$this->_usePathStyleUri = true;
