@@ -858,7 +858,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * The Create Hosted Service operation creates a new hosted service in Windows Azure.
      * 
-     * @param string $serviceName A name for the hosted service that is unique to the subscription.
+     * @param string $serviceName A name for the hosted service that is unique to the subscription. This is the DNS name used for production deployments.
      * @param string $label A label for the hosted service. The label may be up to 100 characters in length.
      * @param string $description A description for the hosted service. The description may be up to 1024 characters in length.
      * @param string $location Required if AffinityGroup is not specified. The location where the hosted service will be created. 
@@ -899,7 +899,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * The Update Hosted Service operation updates the label and/or the description for a hosted service in Windows Azure.
      * 
-     * @param string $serviceName A name for the hosted service that is unique to the subscription.
+     * @param string $serviceName A name for the hosted service that is unique to the subscription. This is the DNS name used for production deployments.
      * @param string $label A label for the hosted service. The label may be up to 100 characters in length.
      * @param string $description A description for the hosted service. The description may be up to 1024 characters in length.
      */
@@ -928,7 +928,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * The Delete Hosted Service operation deletes the specified hosted service in Windows Azure.
      * 
-     * @param string $serviceName A name for the hosted service that is unique to the subscription.
+     * @param string $serviceName A name for the hosted service that is unique to the subscription. This is the DNS name used for production deployments.
      */
     public function deleteHostedService($serviceName)
     {
@@ -950,7 +950,7 @@ class Microsoft_WindowsAzure_Management_Client
      * belongs, or its location if it is not part of an affinity group; and
      * optionally, information on the service's deployments.
      *
-     * @param string $serviceName The name of your service.
+     * @param string $serviceName The name of your service. This is the DNS name used for production deployments.
      * @return Microsoft_WindowsAzure_Management_HostedServiceInstance
      * @throws Microsoft_WindowsAzure_Management_Exception
      */
@@ -1000,7 +1000,7 @@ class Microsoft_WindowsAzure_Management_Client
      * The Create Deployment operation uploads a new service package
      * and creates a new deployment on staging or production.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentSlot	The deployment slot (production or staging)
 	 * @param string $name              The name for the deployment. The deployment ID as listed on the Windows Azure management portal must be unique among other deployments for the hosted service.
 	 * @param string $label             A URL that refers to the location of the service package in the Blob service. The service package must be located in a storage account beneath the same subscription.
@@ -1057,7 +1057,7 @@ class Microsoft_WindowsAzure_Management_Client
      * The Get Deployment operation returns configuration information, status,
      * and system properties for the specified deployment.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentSlot	The deployment slot (production or staging)
      * @return Microsoft_WindowsAzure_Management_DeploymentInstance
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1080,7 +1080,7 @@ class Microsoft_WindowsAzure_Management_Client
      * The Get Deployment operation returns configuration information, status,
      * and system properties for the specified deployment.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentId	The deployment ID as listed on the Windows Azure management portal
      * @return Microsoft_WindowsAzure_Management_DeploymentInstance
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1126,7 +1126,7 @@ class Microsoft_WindowsAzure_Management_Client
      * it will be swapped to the production environment. If it is running
      * in the production environment, it will be swapped to staging.
      * 
-     * @param string $serviceName The service name.
+     * @param string $serviceName The service name. This is the DNS name used for production deployments.
      * @param string $productionDeploymentName The name of the production deployment.
      * @param string $sourceDeploymentName The name of the source deployment.
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1157,7 +1157,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * The Delete Deployment operation deletes the specified deployment.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentSlot	The deployment slot (production or staging)
      * @throws Microsoft_WindowsAzure_Management_Exception
      */
@@ -1178,7 +1178,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * The Delete Deployment operation deletes the specified deployment.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentId	The deployment ID as listed on the Windows Azure management portal
      * @throws Microsoft_WindowsAzure_Management_Exception
      */
@@ -1213,7 +1213,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * The Update Deployment Status operation initiates a change in deployment status.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentSlot	The deployment slot (production or staging)
      * @param string $status            The deployment status (running|suspended)
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1239,7 +1239,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * The Update Deployment Status operation initiates a change in deployment status.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentId	The deployment ID as listed on the Windows Azure management portal
      * @param string $status            The deployment status (running|suspended)
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1378,7 +1378,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * Updates a deployment's role instance count.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentSlot	The deployment slot (production or staging)
      * @param string|array $roleName	The role name
      * @param string|array $instanceCount The instance count
@@ -1408,7 +1408,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * Updates a deployment's role instance count.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentSlot	The deployment slot (production or staging)
      * @param string|array $roleName	The role name
      * @param string|array $instanceCount The instance count
@@ -1481,7 +1481,7 @@ class Microsoft_WindowsAzure_Management_Client
      * Note that you can change a deployment's configuration either by specifying the deployment
      * environment (staging or production), or by specifying the deployment's unique name. 
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentSlot	The deployment slot (production or staging)
      * @param string $configuration     XML configuration represented as a string
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1512,7 +1512,7 @@ class Microsoft_WindowsAzure_Management_Client
      * Note that you can change a deployment's configuration either by specifying the deployment
      * environment (staging or production), or by specifying the deployment's unique name. 
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentId	The deployment ID as listed on the Windows Azure management portal
      * @param string $configuration     XML configuration represented as a string
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1564,7 +1564,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * The Upgrade Deployment operation initiates an upgrade.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentSlot	The deployment slot (production or staging)
 	 * @param string $label             A URL that refers to the location of the service package in the Blob service. The service package must be located in a storage account beneath the same subscription.
 	 * @param string $packageUrl        The service configuration file for the deployment.
@@ -1610,7 +1610,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * The Upgrade Deployment operation initiates an upgrade.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentId	The deployment ID as listed on the Windows Azure management portal
 	 * @param string $label             A URL that refers to the location of the service package in the Blob service. The service package must be located in a storage account beneath the same subscription.
 	 * @param string $packageUrl        The service configuration file for the deployment.
@@ -1682,7 +1682,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * The Walk Upgrade Domain operation specifies the next upgrade domain to be walked during an in-place upgrade.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentSlot	The deployment slot (production or staging)
 	 * @param int $upgradeDomain     An integer value that identifies the upgrade domain to walk. Upgrade domains are identified with a zero-based index: the first upgrade domain has an ID of 0, the second has an ID of 1, and so on.
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1704,7 +1704,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * The Walk Upgrade Domain operation specifies the next upgrade domain to be walked during an in-place upgrade.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentId	The deployment ID as listed on the Windows Azure management portal
 	 * @param int $upgradeDomain     An integer value that identifies the upgrade domain to walk. Upgrade domains are identified with a zero-based index: the first upgrade domain has an ID of 0, the second has an ID of 1, and so on.
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1746,7 +1746,7 @@ class Microsoft_WindowsAzure_Management_Client
      * The Reboot Role Instance operation requests a reboot of a role instance
      * that is running in a deployment.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentSlot	The deployment slot (production or staging)
      * @param string $roleInstanceName  The role instance name
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1772,7 +1772,7 @@ class Microsoft_WindowsAzure_Management_Client
      * The Reboot Role Instance operation requests a reboot of a role instance
      * that is running in a deployment.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentId	The deployment ID as listed on the Windows Azure management portal
      * @param string $roleInstanceName  The role instance name
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1797,7 +1797,7 @@ class Microsoft_WindowsAzure_Management_Client
      * The Reimage Role Instance operation requests a reimage of a role instance
      * that is running in a deployment.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentSlot	The deployment slot (production or staging)
      * @param string $roleInstanceName  The role instance name
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1823,7 +1823,7 @@ class Microsoft_WindowsAzure_Management_Client
      * The Reimage Role Instance operation requests a reimage of a role instance
      * that is running in a deployment.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentId	    The deployment ID as listed on the Windows Azure management portal
      * @param string $roleInstanceName  The role instance name
      * @throws Microsoft_WindowsAzure_Management_Exception
