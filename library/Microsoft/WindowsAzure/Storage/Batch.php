@@ -214,7 +214,7 @@ class Microsoft_WindowsAzure_Storage_Batch
         
         // Parse response
         $errors = null;
-        preg_match_all('/<message (.*)>(.*)<\/message>/', $response->getBody(), $errors);
+        preg_match_all('/<message (.*?)>(.*?)<\/message>/s', $response->getBody(), $errors);
         
         // Error?
         if (count($errors[2]) > 0) {
