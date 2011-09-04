@@ -97,6 +97,7 @@ class Microsoft_WindowsAzure_CommandLine_Deployment
 			$deploymentSlot = 'production';
 		}
 
+		$client = new Microsoft_WindowsAzure_Management_Client($subscriptionId, $certificate, $certificatePassphrase);
 		$client->createDeployment($serviceName, $deploymentSlot, $deploymentName, $label, $packageUrl, $serviceConfigurationLocation, $startImmediately, $warningsAsErrors);
 
 		if ($waitForOperation) {
@@ -185,7 +186,7 @@ class Microsoft_WindowsAzure_CommandLine_Deployment
 			$result = $client->getDeploymentByDeploymentId($serviceName, $deploymentName);
 		}
 
-		$this->_displayObjectInformation($result, array('Name', 'DeploymentSlot', 'Label', 'Url', 'Status'));
+		$this->_displayObjectInformation($result, array('Name', 'DeploymentSlot', 'Label', 'Url', 'Status')); 
 	}
 	
 	/**
