@@ -1936,8 +1936,8 @@ class Microsoft_WindowsAzure_Management_Client
 			
 			return new Microsoft_WindowsAzure_Management_CertificateInstance(
 				$this->getBaseUrl() . $operationUrl,
-				$algorithm,
 				$thumbprint,
+				$algorithm,
 				(string)$result->Data
 			);
 		} else {
