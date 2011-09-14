@@ -218,8 +218,166 @@ class Microsoft_WindowsAzure_CommandLine_Deployment
 		} else {
 			$result = $client->getDeploymentByDeploymentId($serviceName, $deploymentName);
 		}
-
+		
 		printf("%s\r\n", $result->$property);
+	}
+	
+	/**
+	 * Get role instances.
+	 * 
+	 * @command-name GetRoleInstances
+	 * @command-description Get role instance information (instance count, instance names, and instance statuses for a specified deployment.
+	 * @command-parameter-for $subscriptionId Microsoft_Console_Command_ParameterSource_Argv|Microsoft_Console_Command_ParameterSource_ConfigFile|Microsoft_Console_Command_ParameterSource_Env --SubscriptionId|-sid Required. This is the Windows Azure Subscription Id to operate on.
+	 * @command-parameter-for $certificate Microsoft_Console_Command_ParameterSource_Argv|Microsoft_Console_Command_ParameterSource_ConfigFile|Microsoft_Console_Command_ParameterSource_Env --Certificate|-cert Required. This is the .pem certificate that user has uploaded to Windows Azure subscription as Management Certificate.
+	 * @command-parameter-for $certificatePassphrase Microsoft_Console_Command_ParameterSource_Argv|Microsoft_Console_Command_ParameterSource_ConfigFile --Passphrase|-p The certificate passphrase. If not specified, a prompt will be displayed.
+	 * @command-parameter-for $serviceName Microsoft_Console_Command_ParameterSource_Argv|Microsoft_Console_Command_ParameterSource_ConfigFile|Microsoft_Console_Command_ParameterSource_Env|Microsoft_Console_Command_ParameterSource_StdIn --Name Required. The hosted service DNS name to operate on.
+	 * @command-parameter-for $deploymentSlot Microsoft_Console_Command_ParameterSource_Argv|Microsoft_Console_Command_ParameterSource_ConfigFile --BySlot Required if deployment name is omitted. The slot to retrieve property information for.
+	 * @command-parameter-for $deploymentName Microsoft_Console_Command_ParameterSource_Argv|Microsoft_Console_Command_ParameterSource_ConfigFile --ByName Required if deployment slot is omitted. The deployment name to retrieve property information for.
+	 * @command-example Get role instances for production-slot deployment of the hosted service "phptest":
+	 * @command-example GetRoleInstances -sid="<your_subscription_id>" -cert="mycert.pem"
+	 * @command-example --Name="servicename" --BySlot="production"
+	 */
+	public function getRoleInstances($subscriptionId, $certificate, $certificatePassphrase, $serviceName, $deploymentSlot, $deploymentName)
+	{
+		$client = new Microsoft_WindowsAzure_Management_Client($subscriptionId, $certificate, $certificatePassphrase);
+		
+		$result = null;
+		
+		if (!is_null($deploymentSlot) && $deploymentSlot != '') {
+			$deploymentSlot = strtolower($deploymentSlot);
+			
+			$result = $client->getRoleInstancesByDeploymentSlot($serviceName, $deploymentSlot);
+		} else {
+			$result = $client->getRoleInstancesByDeploymentId($serviceName, $deploymentName);
+		}
+		
+		printf("InstanceCount:%s\n\n", count($result));
+		$instance_index = 0;
+		foreach($result as $instance) {
+			printf("Instance%s\n", $instance_index );
+			printf("Name:%s\n", $instance['instancename']);
+			printf("Status:%s\n", $instance['instancestatus']);
+			printf("\n");
+			$instance_index++;
+		}
+	}
+	
+	/**
+	 * Get role instance properties.
+	 * 
+	 * @command-name GetRoleInstanceProperties
+	 * @command-description Get role instance information for a specified role instance.
+	 * @command-parameter-for $subscriptionId Microsoft_Console_Command_ParameterSource_Argv|Microsoft_Console_Command_ParameterSource_ConfigFile|Microsoft_Console_Command_ParameterSource_Env --SubscriptionId|-sid Required. This is the Windows Azure Subscription Id to operate on.
+	 * @command-parameter-for $certificate Microsoft_Console_Command_ParameterSource_Argv|Microsoft_Console_Command_ParameterSource_ConfigFile|Microsoft_Console_Command_ParameterSource_Env --Certificate|-cert Required. This is the .pem certificate that user has uploaded to Windows Azure subscription as Management Certificate.
+	 * @command-parameter-for $certificatePassphrase Microsoft_Console_Command_ParameterSource_Argv|Microsoft_Console_Command_ParameterSource_ConfigFile --Passphrase|-p The certificate passphrase. If not specified, a prompt will be displayed.
+	 * @command-parameter-for $serviceName Microsoft_Console_Command_ParameterSource_Argv|Microsoft_Console_Command_ParameterSource_ConfigFile|Microsoft_Console_Command_ParameterSource_Env|Microsoft_Console_Command_ParameterSource_StdIn --Name Required. The hosted service DNS name to operate on.
+	 * @command-parameter-for $deploymentSlot Microsoft_Console_Command_ParameterSource_Argv|Microsoft_Console_Command_ParameterSource_ConfigFile --BySlot Required if deployment name is omitted. The slot to retrieve property information for.
+	 * @command-parameter-for $deploymentName Microsoft_Console_Command_ParameterSource_Argv|Microsoft_Console_Command_ParameterSource_ConfigFile --ByName Required if deployment slot is omitted. The deployment name to retrieve property information for.
+	 * @command-parameter-for $instanceName Microsoft_Console_Command_ParameterSource_Argv|Microsoft_Console_Command_ParameterSource_ConfigFile --InstanceName Required. The role instance name to retrieve properties for.
+	 * @command-example Get role instance properties for role "role_0" for production-slot deployment of the hosted service "phptest":
+	 * @command-example GetRoleInstances -sid="<your_subscription_id>" -cert="mycert.pem"
+	 * @command-example --Name="servicename" --BySlot="production" --InstanceName="role_0"
+	 */
+	public function getRoleInstanceProperties($subscriptionId, $certificate, $certificatePassphrase, $serviceName, $deploymentSlot, $deploymentName, $instanceName)
+	{
+		$client = new Microsoft_WindowsAzure_Management_Client($subscriptionId, $certificate, $certificatePassphrase);
+		
+		$result = null;
+		
+		if (!is_null($deploymentSlot) && $deploymentSlot != '') {
+			$deploymentSlot = strtolower($deploymentSlot);
+			
+			$result = $client->getRoleInstancesByDeploymentSlot($serviceName, $deploymentSlot);
+		} else {
+			$result = $client->getRoleInstancesByDeploymentId($serviceName, $deploymentName);
+		}
+		
+		$instance_found = false;
+		
+		foreach($result as $instance) {
+			if($instance['instancename'] == $instanceName) {
+				printf("Status: \t%s\n", $instance['instancestatus']);
+				printf("Upgrade domain: %s\n", $instance['instanceupgradedomain']);
+				printf("Fault domain: \t%s\n", $instance['instancefaultdomain']);
+				printf("Size: \t\t%s\n", $instance['instancesize']);
+				printf("\n");
+				$instance_found = true;
+				continue;
+			}
+		}
+		
+		if(!$instance_found) {
+				printf("No instance with name %s was found.", $instanceName);
+		}
+	}
+	
+	/**
+	 * Get a role instance property.
+	 * 
+	 * @command-name GetRoleInstanceProperty
+	 * @command-description Get a specified role instance property for a specified role instance.
+	 * @command-parameter-for $subscriptionId Microsoft_Console_Command_ParameterSource_Argv|Microsoft_Console_Command_ParameterSource_ConfigFile|Microsoft_Console_Command_ParameterSource_Env --SubscriptionId|-sid Required. This is the Windows Azure Subscription Id to operate on.
+	 * @command-parameter-for $certificate Microsoft_Console_Command_ParameterSource_Argv|Microsoft_Console_Command_ParameterSource_ConfigFile|Microsoft_Console_Command_ParameterSource_Env --Certificate|-cert Required. This is the .pem certificate that user has uploaded to Windows Azure subscription as Management Certificate.
+	 * @command-parameter-for $certificatePassphrase Microsoft_Console_Command_ParameterSource_Argv|Microsoft_Console_Command_ParameterSource_ConfigFile --Passphrase|-p The certificate passphrase. If not specified, a prompt will be displayed.
+	 * @command-parameter-for $serviceName Microsoft_Console_Command_ParameterSource_Argv|Microsoft_Console_Command_ParameterSource_ConfigFile|Microsoft_Console_Command_ParameterSource_Env|Microsoft_Console_Command_ParameterSource_StdIn --Name Required. The hosted service DNS name to operate on.
+	 * @command-parameter-for $deploymentSlot Microsoft_Console_Command_ParameterSource_Argv|Microsoft_Console_Command_ParameterSource_ConfigFile --BySlot Required if deployment name is omitted. The slot to retrieve property information for.
+	 * @command-parameter-for $deploymentName Microsoft_Console_Command_ParameterSource_Argv|Microsoft_Console_Command_ParameterSource_ConfigFile --ByName Required if deployment slot is omitted. The deployment name to retrieve property information for.
+	 * @command-parameter-for $instanceName Microsoft_Console_Command_ParameterSource_Argv|Microsoft_Console_Command_ParameterSource_ConfigFile --InstanceName Required. The role instance name to retrieve properties for.
+	 * @command-parameter-for $propertyName Microsoft_Console_Command_ParameterSource_Argv|Microsoft_Console_Command_ParameterSource_ConfigFile --PropertyName Required. The role instance property to retrieve.
+	 * @command-example Get role instance property "Status" for role "role_0" for production-slot deployment of the hosted service "phptest":
+	 * @command-example GetRoleInstances -sid="<your_subscription_id>" -cert="mycert.pem"
+	 * @command-example --Name="servicename" --BySlot="production" --InstanceName="role_0" --PropertyName="Status"
+	 * @command-example Possible values for PropertyName are "Role Name", "Status", "Upgrade Domain", "Fault Domain", "Size"
+	 */
+	public function getRoleInstanceProperty($subscriptionId, $certificate, $certificatePassphrase, $serviceName, $deploymentSlot, $deploymentName, $instanceName, $propertyName)
+	{
+		if (!in_array($propertyName, array("Role Name", "Status", "Upgrade Domain", "Fault Domain", "Size"))) {
+			printf("%s is not a valid property name. Valid property names are 'Role Name', 'Status', 'Upgrade Domain', 'Fault Domain', 'Size'", $propertyName);
+			return;
+		}
+		
+		$client = new Microsoft_WindowsAzure_Management_Client($subscriptionId, $certificate, $certificatePassphrase);
+		
+		$result = null;
+		
+		if (!is_null($deploymentSlot) && $deploymentSlot != '') {
+			$deploymentSlot = strtolower($deploymentSlot);
+			
+			$result = $client->getRoleInstancesByDeploymentSlot($serviceName, $deploymentSlot);
+		} else {
+			$result = $client->getRoleInstancesByDeploymentId($serviceName, $deploymentName);
+		}
+		
+		$instance_found = false;
+		
+		foreach($result as $instance) {
+			if($instance['instancename'] == $instanceName) {
+				switch($propertyName) {
+					case "Role Name":
+						printf($instance['rolename']);
+						break;
+					case "Status":
+						printf($instance['instancestatus']);
+						break;
+					case "Upgrade Domain":
+						printf($instance['instanceupgradedomain']);
+						break;
+					case "Fault Domain":
+						printf($instance['instancefaultdomain']);
+						break;
+					case "Size":
+						printf($instance['instancesize']);
+						break;
+				}
+				
+				$instance_found = true;
+				continue;
+			}
+		}
+		
+		if(!$instance_found) {
+			printf("No instance with name %s was found.", $instanceName);
+		}
 	}
 	
 	/**

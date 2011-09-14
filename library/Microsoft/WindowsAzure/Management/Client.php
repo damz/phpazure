@@ -1098,6 +1098,53 @@ class Microsoft_WindowsAzure_Management_Client
     	return $this->_getDeployment($operationUrl);
     }
     
+	 /**
+     * The Get Role Instances by Deployment Slot operation returns an array of arrays containing role instance information
+     * for each role instance associated with the deployment specified by slot (staging or production).
+     * 
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
+     * @param string $deploymentSlot	The deployment slot (production or staging)
+     * @return Array
+     * @throws Microsoft_WindowsAzure_Management_Exception
+     */
+    public function getRoleInstancesByDeploymentSlot($serviceName, $deploymentSlot)
+    {
+        if ($serviceName == '' || is_null($serviceName)) {
+    		throw new Microsoft_WindowsAzure_Management_Exception('Service name should be specified.');
+    	}
+    	$deploymentSlot = strtolower($deploymentSlot);
+    	if ($deploymentSlot != 'production' && $deploymentSlot != 'staging') {
+    		throw new Microsoft_WindowsAzure_Management_Exception('Deployment slot should be production|staging.');
+    	}
+    	
+    	$operationUrl = self::OP_HOSTED_SERVICES . '/' . $serviceName . '/deploymentslots/' . $deploymentSlot;
+    	$deployment = $this->_getDeployment($operationUrl);
+		return $deployment->roleInstanceList;
+    }
+	
+	/**
+     * The Get Role Instances by Deployment Slot operation returns an array of arrays containing role instance information
+     * for each role instance associated with the deployment specified by Id.
+     * 
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
+     * @param string $deploymentId		The deployment ID as listed on the Windows Azure management portal
+     * @return Array
+     * @throws Microsoft_WindowsAzure_Management_Exception
+     */
+    public function getRoleInstancesByDeploymentId($serviceName, $deploymentId)
+    {
+        if ($serviceName == '' || is_null($serviceName)) {
+    		throw new Microsoft_WindowsAzure_Management_Exception('Service name should be specified.');
+    	}
+        if ($deploymentId == '' || is_null($deploymentId)) {
+    		throw new Microsoft_WindowsAzure_Management_Exception('Deployment ID should be specified.');
+    	}
+    	
+    	$operationUrl = self::OP_HOSTED_SERVICES . '/' . $serviceName . '/deployments/' . $deploymentId;
+    	$deployment = $this->_getDeployment($operationUrl);
+		return $deployment->roleInstanceList;
+    }
+	
     /**
      * The Get Deployment operation returns configuration information, status,
      * and system properties for the specified deployment.
