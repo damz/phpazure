@@ -89,16 +89,23 @@ class Microsoft_WindowsAzure_CommandLine_Package
 		}
 
 		// Find Windows Azure SDK bin folder
-		$windowsAzureSdkFolderCandidates = array_merge(
-			isset($_SERVER['ProgramFiles']) ? glob($_SERVER['ProgramFiles'] . '\Windows Azure SDK\*\bin', GLOB_NOSORT) : array(),
-			isset($_SERVER['ProgramFiles(x86)']) ? glob($_SERVER['ProgramFiles(x86)'] . '\Windows Azure SDK\*\bin', GLOB_NOSORT) : array(),
-			isset($_SERVER['ProgramW6432']) ? glob($_SERVER['ProgramW6432'] . '\Windows Azure SDK\*\bin', GLOB_NOSORT) : array()
-		);
+		$windowsAzureSdkFolderCandidates = array();
+		if (class_exists('COM')) {
+			$shell = new COM("WScript.Shell");
+			$windowsAzureSdkFolderCandidates[] = $shell->RegRead('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\ServiceHosting\v1.0\InstallPath') . '\bin';
+		}
+		if (count($windowsAzureSdkFolderCandidates) == 0) {
+			$windowsAzureSdkFolderCandidates = array_merge(
+				isset($_SERVER['ProgramFiles']) ? glob($_SERVER['ProgramFiles'] . '\Windows Azure SDK\*\bin', GLOB_NOSORT) : array(),
+				isset($_SERVER['ProgramFiles(x86)']) ? glob($_SERVER['ProgramFiles(x86)'] . '\Windows Azure SDK\*\bin', GLOB_NOSORT) : array(),
+				isset($_SERVER['ProgramW6432']) ? glob($_SERVER['ProgramW6432'] . '\Windows Azure SDK\*\bin', GLOB_NOSORT) : array()
+			);
+		}
 		if (count($windowsAzureSdkFolderCandidates) == 0) {
 			throw new Microsoft_Console_Exception('Could not locate the Windows Azure SDK. Download the tools from www.azure.com or using the Web Platform Installer.');
 		}
-		$cspack = '"' . $windowsAzureSdkFolderCandidates[0] . '\cspack.exe' . '"';
-		$csrun = '"' . $windowsAzureSdkFolderCandidates[0] . '\csrun.exe' . '"';
+		$cspack = '"' . $windowsAzureSdkFolderCandidates[count($windowsAzureSdkFolderCandidates) - 1] . '\cspack.exe' . '"';
+		$csrun = '"' . $windowsAzureSdkFolderCandidates[count($windowsAzureSdkFolderCandidates) - 1] . '\csrun.exe' . '"';
 		
 		// Open the ServiceDefinition.csdef file and check for role paths
 		$serviceDefinitionFile = $path . '/ServiceDefinition.csdef';
